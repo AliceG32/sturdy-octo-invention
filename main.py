@@ -1,83 +1,47 @@
+import sys
+
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtGui import QPolygon
 from sys import argv, exit
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPainter, QColor
-from random import choice, randint
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from random  choice, randint
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.resize(500, 500)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(0, 0, 500, 500))
-        MainWindow.setCentralWidget(self.centralwidget)
-        MainWindow.setWindowTitle("Супрематизм")
+class Main(QWidget):
 
-
-class Main(Ui_MainWindow, QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setupUi(self)
-        self.x = -1
-        self.y = -1
-        self.k = 0
-        self.setMouseTracking(True)
+        self.setGeometry(300, 300, 400, 400)
+        self.setWindowTitle('Фокус со словами')
+        self.button = QPushButton(self)
+        self.button.setGeometry(100, 100, 100, 100)
         self.colors = ['Red', 'Orange', 'Yellow', 'Green',
                        'Blue', 'Purple', 'Brown', 'Black']
 
-    def mousePressEvent(self, event):
-        self.x = event.x()
-        self.y = event.y()
-        if event.button() == Qt.LeftButton:
-            self.k = 1
-        elif event.button() == Qt.RightButton:
-            self.k = -1
-        self.update()
-
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Space:
-            self.k = 2
-            self.update()
+        self.button.clicked.connect(self.drawing)
 
     def paintEvent(self, event):
-        qp = QPainter()
-        qp.begin(self)
-        self.drawing(qp)
-        qp.end()
+        if self.do_paint:
+            qp = QPainter()
+            qp.begin(self)
+            self.drawing(qp)
+            qp.end()
 
-    def drawing(self, qp):
-        if self.k == 0:
-            qp.setBrush(QColor(choice(self.colors)))
-            points = QPolygon([QPoint(randint(1, 300), randint(1, 300)),
-                               QPoint(randint(1, 300), randint(1, 300)),
-                               QPoint(randint(1, 300), randint(1, 300)),
-                               QPoint(randint(1, 300), randint(1, 300))])
-            qp.drawPolygon(points)
-        elif self.k == 1:
-            qp.setBrush(QColor(choice(self.colors)))
-            qp.drawRect(self.x, self.y, randint(1, 100), randint(1, 100))
-            ex.show()
+    def drawing(self,qp):
+        qp.setBrush(QColor(choice(self.colors)))
+        a = randint(1, 100)
+        qp.drawEllipse(0, 0, a, a)
 
-        elif self.k == -1:
+        self.do_paint = True
+        self.repaint()
 
-            qp.setBrush(QColor(choice(self.colors)))
-            a = randint(1, 100)
-            qp.drawEllipse(self.x, self.y, a, a)
 
-        elif self.k == 2:
-            qp.setBrush(QColor(choice(self.colors)))
-            points = QPolygon([QPoint(self.x + randint(1, self.x),
-                                      self.y + randint(1, self.y)),
-                               QPoint(self.x, self.y),
-                               QPoint(self.x // 2, self.y * 2)])
-            qp.drawPolygon(points)
 
 
 if __name__ == '__main__':
-    app = QApplication(argv)
+    app = QApplication(sys.argv)
     ex = Main()
     ex.show()
-    exit(app.exec())
+    sys.exit(app.exec())
