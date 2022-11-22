@@ -1,26 +1,29 @@
-import sys
-
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtGui import QPolygon
 from sys import argv, exit
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPainter, QColor
-from random  choice, randint
+from random import choice, randint
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget
 
 
-class Main(QWidget):
-
+class Focus(QWidget):
     def __init__(self):
         super().__init__()
-        self.setGeometry(300, 300, 400, 400)
-        self.setWindowTitle('Фокус со словами')
+        self.initUI()
+
+    def initUI(self):
+        self.do_paint = False
+        self.x = -1
+        self.y = -1
+        self.k = 0
         self.button = QPushButton(self)
         self.button.setGeometry(100, 100, 100, 100)
         self.colors = ['Red', 'Orange', 'Yellow', 'Green',
                        'Blue', 'Purple', 'Brown', 'Black']
-
-        self.button.clicked.connect(self.drawing)
+        self.setGeometry(300, 300, 600, 600)
+        self.setWindowTitle('Фокус со словами')
+        self.button.clicked.connect(self.paint)
 
     def paintEvent(self, event):
         if self.do_paint:
@@ -29,19 +32,19 @@ class Main(QWidget):
             self.drawing(qp)
             qp.end()
 
-    def drawing(self,qp):
-        qp.setBrush(QColor(choice(self.colors)))
-        a = randint(1, 100)
-        qp.drawEllipse(0, 0, a, a)
-
+    def paint(self):
         self.do_paint = True
         self.repaint()
 
+    def drawing(self, qp):
+        qp.setBrush(QColor(choice(self.colors)))
+        a = randint(1, 100)
+        qp.drawEllipse(self.x, self.y, a, a)
 
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = Main()
+    app = QApplication(argv)
+    ex = Focus()
     ex.show()
-    sys.exit(app.exec())
+    exit(app.exec())
