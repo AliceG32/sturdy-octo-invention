@@ -19,8 +19,6 @@ class Focus(QWidget):
         self.k = 0
         self.button = QPushButton(self)
         self.button.setGeometry(100, 100, 100, 100)
-        self.colors = ['Red', 'Orange', 'Yellow', 'Green',
-                       'Blue', 'Purple', 'Brown', 'Black']
         self.setGeometry(300, 300, 600, 600)
         self.setWindowTitle('Фокус со словами')
         self.button.clicked.connect(self.paint)
@@ -37,10 +35,9 @@ class Focus(QWidget):
         self.repaint()
 
     def drawing(self, qp):
-        qp.setBrush(QColor(choice(self.colors)))
+        qp.setBrush(QColor('Yellow'))
         a = randint(1, 100)
-        qp.drawEllipse(self.x, self.y, a, a)
-
+        qp.drawEllipse(300, 300, a, a)
 
 
 if __name__ == '__main__':
