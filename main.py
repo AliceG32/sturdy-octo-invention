@@ -24,18 +24,56 @@ class Main(Ui_MainWindow, QMainWindow):
         self.x = -1
         self.y = -1
         self.k = 0
-        self.button_2 = QPushButton(self)
-        self.button_2.move(610, 90)
-        self.button_2.setText("G")
+        self.setMouseTracking(True)
+        self.colors = ['Red', 'Orange', 'Yellow', 'Green',
+                       'Blue', 'Purple', 'Brown', 'Black']
 
+    def mousePressEvent(self, event):
+        self.x = event.x()
+        self.y = event.y()
+        if event.button() == Qt.LeftButton:
+            self.k = 1
+        elif event.button() == Qt.RightButton:
+            self.k = -1
+        self.update()
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Space:
+            self.k = 2
+            self.update()
+
+    def paintEvent(self, event):
+        qp = QPainter()
+        qp.begin(self)
+        self.drawing(qp)
+        qp.end()
 
     def drawing(self, qp):
-
-        if self.k == 1:
-            qp.setBrush(QColor(choice('Yellow')))
+        if self.k == 0:
+            qp.setBrush(QColor(choice(self.colors)))
+            points = QPolygon([QPoint(randint(1, 300), randint(1, 300)),
+                               QPoint(randint(1, 300), randint(1, 300)),
+                               QPoint(randint(1, 300), randint(1, 300)),
+                               QPoint(randint(1, 300), randint(1, 300))])
+            qp.drawPolygon(points)
+        elif self.k == 1:
+            qp.setBrush(QColor(choice(self.colors)))
             qp.drawRect(self.x, self.y, randint(1, 100), randint(1, 100))
             ex.show()
 
+        elif self.k == -1:
+
+            qp.setBrush(QColor(choice(self.colors)))
+            a = randint(1, 100)
+            qp.drawEllipse(self.x, self.y, a, a)
+
+        elif self.k == 2:
+            qp.setBrush(QColor(choice(self.colors)))
+            points = QPolygon([QPoint(self.x + randint(1, self.x),
+                                      self.y + randint(1, self.y)),
+                               QPoint(self.x, self.y),
+                               QPoint(self.x // 2, self.y * 2)])
+            qp.drawPolygon(points)
 
 
 if __name__ == '__main__':
